@@ -94,8 +94,7 @@ export class SmaBridgingDemo extends cdk.Stack {
         inlinePolicies: {
           ['chimePolicy']: new iam.PolicyDocument( { statements: [new iam.PolicyStatement({
             resources: ['*'],
-            actions: ['chime:*',
-                      'lambda:*']})]})
+            actions: ['chime:*']})]})
         },
         managedPolicies: [ iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole") ]
       })
