@@ -40,7 +40,7 @@ exports.handler = async(event, context, callback) => {
 
         case "CALL_ANSWERED":
             console.log("CALL ANSWERED")
-            actions = await newCall(event);
+            actions = []
             break;
 
         default:
