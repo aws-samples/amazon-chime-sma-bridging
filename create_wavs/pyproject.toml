@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "create-wavs"
+version = "0.1.0"
+description = ""
+authors = ["Court Schuett <schuettc@amazon.com>"]
+readme = "README.md"
+packages = [{include = "create_wavs"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+boto3 = "^1.24.82"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

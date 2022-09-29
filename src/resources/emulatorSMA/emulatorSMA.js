@@ -1,47 +1,50 @@
 //  “Copyright Amazon.com Inc. or its affiliates.”
-const AWS = require("aws-sdk");
-const wavFileBucket = process.env["WAVFILE_BUCKET"];
-const callInfoTable = process.env["CALLINFO_TABLE_NAME"];
+const AWS = require('aws-sdk');
+const wavFileBucket = process.env['WAVFILE_BUCKET'];
+const callInfoTable = process.env['CALLINFO_TABLE_NAME'];
 var documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context, callback) => {
-  console.log("Lambda is invoked with calldetails:" + JSON.stringify(event));
+  console.log('Lambda is invoked with calldetails:' + JSON.stringify(event));
   let actions;
 
   switch (event.InvocationEventType) {
-    case "NEW_INBOUND_CALL":
-      console.log("INBOUND");
+    case 'NEW_INBOUND_CALL':
+      console.log('INBOUND');
       // New inbound call
       actions = await newCall(event);
       break;
 
-    case "ACTION_SUCCESSFUL":
+    case 'ACTION_SUCCESSFUL':
       // Action from the previous invocation response
       // or a action requiring callback was successful
-      console.log("SUCCESS ACTION");
+      console.log('SUCCESS ACTION');
       actions = await actionSuccessful(event);
       break;
 
-    case "HANGUP":
-      // Hangup received
-      console.log("HANGUP ACTION");
-      if (event.CallDetails.Participants[0].Status === "Disconnected") {
+    case 'HANGUP':
+      console.log('HANGUP');
+      const hangupId = event.CallDetails.Participants.filter(
+        ({ Status }) => Status === 'Connected',
+      )?.[0]?.CallId;
+      if (hangupId) {
+        hangupAction.Parameters.CallId = hangupId;
+        actions = [hangupAction];
       }
-      actions = [];
       break;
 
     default:
       // Action unsuccessful or unknown event recieved
-      console.log("FAILED ACTION");
+      console.log('FAILED ACTION');
       actions = [hangupAction];
   }
 
   const response = {
-    SchemaVersion: "1.0",
+    SchemaVersion: '1.0',
     Actions: actions,
   };
 
-  console.log("Sending response:" + JSON.stringify(response));
+  console.log('Sending response:' + JSON.stringify(response));
 
   callback(null, response);
 };
@@ -51,26 +54,29 @@ async function newCall(event, details) {
   // Play a welcome message after answering the call, play a prompt and gather DTMF tones
   const callInfo = await getCaller(event.CallDetails.Participants[0].From);
 
-  playAccountIdAction.Parameters.AudioSource.Key = callInfo.id + ".wav";
-
-  if (callInfo.extension === "sales") {
-    playAudioAction.Parameters.AudioSource.Key = "sales.wav";
+  // playAccountIdAction.Parameters.AudioSource.Key = callInfo.id + '.wav';
+  speakAction.Parameters.Text =
+    "<speak><say-as interpret-as='digits'>" +
+    callInfo.accountId +
+    '</say-as></speak>';
+  if (callInfo.extension === 'sales') {
+    playAudioAction.Parameters.AudioSource.Key = 'sales.wav';
   } else {
-    playAudioAction.Parameters.AudioSource.Key = "support.wav";
+    playAudioAction.Parameters.AudioSource.Key = 'support.wav';
   }
 
-  return [playAudioAction, playAccountIdAction, hangupAction];
+  return [playAudioAction, speakAction, hangupAction];
 }
 
 async function actionSuccessful(event) {
-  console.log("ACTION_SUCCESSFUL");
+  console.log('ACTION_SUCCESSFUL');
 
   switch (event.ActionData.Type) {
-    case "PlayAudio":
+    case 'PlayAudio':
       return [];
 
-    case "RecordAudio":
-      playAudioAction.Parameters.AudioSource.Key = "request_received.wav";
+    case 'RecordAudio':
+      playAudioAction.Parameters.AudioSource.Key = 'request_received.wav';
       return [playAudioAction, hangupAction];
 
     default:
@@ -79,33 +85,45 @@ async function actionSuccessful(event) {
 }
 
 const hangupAction = {
-  Type: "Hangup",
+  Type: 'Hangup',
   Parameters: {
-    SipResponseCode: "0",
+    SipResponseCode: '0',
   },
 };
 
 const playAudioAction = {
-  Type: "PlayAudio",
+  Type: 'PlayAudio',
   Parameters: {
-    ParticipantTag: "LEG-A",
+    ParticipantTag: 'LEG-A',
     AudioSource: {
-      Type: "S3",
+      Type: 'S3',
       BucketName: wavFileBucket,
-      Key: "",
+      Key: '',
     },
   },
 };
 
 const playAccountIdAction = {
-  Type: "PlayAudio",
+  Type: 'PlayAudio',
   Parameters: {
-    ParticipantTag: "LEG-A",
+    ParticipantTag: 'LEG-A',
     AudioSource: {
-      Type: "S3",
+      Type: 'S3',
       BucketName: wavFileBucket,
-      Key: "",
+      Key: '',
     },
+  },
+};
+
+const speakAction = {
+  Type: 'Speak',
+  Parameters: {
+    Text: '',
+    CallId: '',
+    Engine: 'neural',
+    LanguageCode: 'en-US',
+    TextType: 'ssml',
+    VoiceId: 'Joanna',
   },
 };
 
@@ -129,12 +147,12 @@ async function getCaller(callInfo) {
       console.log({ callInfo });
       return callInfo;
     } else {
-      console.log("Account ID not found");
+      console.log('Account ID not found');
       return false;
     }
   } catch (err) {
     console.log(err);
-    console.log("No phone found");
+    console.log('No phone found');
     return false;
   }
 }

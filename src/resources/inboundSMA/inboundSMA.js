@@ -1,111 +1,108 @@
 //  “Copyright Amazon.com Inc. or its affiliates.”
-const AWS = require("aws-sdk");
-const wavFileBucket = process.env["WAVFILE_BUCKET"];
-const callInfoTable = process.env["CALLINFO_TABLE_NAME"];
-const salesNumber = process.env["SALES_PHONE_NUMBER"];
-const supportNumber = process.env["SUPPORT_PHONE_NUMBER"];
+const AWS = require('aws-sdk');
+const wavFileBucket = process.env['WAVFILE_BUCKET'];
+const callInfoTable = process.env['CALLINFO_TABLE_NAME'];
+const salesNumber = process.env['SALES_PHONE_NUMBER'];
+const supportNumber = process.env['SUPPORT_PHONE_NUMBER'];
 var documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context, callback) => {
-  console.log("Lambda is invoked with calldetails:" + JSON.stringify(event));
+  console.log('Lambda is invoked with calldetails:' + JSON.stringify(event));
   let actions;
 
   switch (event.InvocationEventType) {
-    case "NEW_INBOUND_CALL":
-      console.log("INBOUND");
+    case 'NEW_INBOUND_CALL':
+      console.log('INBOUND');
       actions = await newCall(event);
       break;
 
-    case "ACTION_SUCCESSFUL":
-      console.log("SUCCESS ACTION");
+    case 'ACTION_SUCCESSFUL':
+      console.log('SUCCESS ACTION');
       actions = await actionSuccessful(event);
       break;
 
-    case "HANGUP":
-      console.log("HANGUP ACTION");
-      if (event.CallDetails.Participants[0].ParticipantTag === "LEG-B") {
-        console.log("HANGUP FROM LEG-B");
-        hangupAction.Parameters.ParticipantTag = "LEG-A";
+    case 'HANGUP':
+      console.log('HANGUP');
+      const hangupId = event.CallDetails.Participants.filter(
+        ({ Status }) => Status === 'Connected',
+      )?.[0]?.CallId;
+      if (hangupId) {
+        hangupAction.Parameters.CallId = hangupId;
         actions = [hangupAction];
-        break;
-      } else if (event.CallDetails.Participants[0].ParticipantTag === "LEG-A") {
-        console.log("HANGUP FROM LEG-A");
-        hangupAction.Parameters.ParticipantTag = "LEG-B";
-        actions = [hangupAction];
-        break;
-      } else {
-        actions = [];
-        break;
       }
+      break;
 
-    case "CALL_ANSWERED":
-      console.log("CALL ANSWERED");
+    case 'CALL_ANSWERED':
+      console.log('CALL ANSWERED');
       actions = [];
       break;
 
     default:
-      console.log("FAILED ACTION");
+      console.log('FAILED ACTION');
       actions = [hangupAction];
   }
 
   const response = {
-    SchemaVersion: "1.0",
+    SchemaVersion: '1.0',
     Actions: actions,
   };
 
-  console.log("Sending response:" + JSON.stringify(response));
+  console.log('Sending response:' + JSON.stringify(response));
 
   callback(null, response);
 };
 
 // New call handler
-async function newCall(event, details) {
+async function newCall(event) {
   const callInfo = await getCaller(event.CallDetails.Participants[0].From);
   if (callInfo === false) {
-    console.log("Do not know this phone number.  Getting Account ID");
+    console.log('Do not know this phone number.  Getting Account ID');
     playAudioAndGetDigitsAction.Parameters.MinNumberOfDigits = 5;
     playAudioAndGetDigitsAction.Parameters.MaxNumberOfDigits = 5;
-    playAudioAndGetDigitsAction.Parameters.AudioSource.Key = "greeting.wav";
+    playAudioAndGetDigitsAction.Parameters.AudioSource.Key = 'greeting.wav';
     return [playAudioAndGetDigitsAction];
   } else {
-    console.log("Know this phone number.  Sending Prompt");
-    playAudioAction.Parameters.AudioSource.Key = "accountId.wav";
-    playAccountIdAction.Parameters.AudioSource.Key = callInfo.id + ".wav";
+    console.log('Know this phone number.  Sending Prompt');
+    speakAction.Parameters.Text =
+      "<speak>Your account ID is <say-as interpret-as='digits'>" +
+      callInfo.accountId +
+      '</say-as>.</speak>';
+    'Your account ID is ' + callInfo.accountId;
     playAudioAndGetDigitsAction.Parameters.MinNumberOfDigits = 1;
     playAudioAndGetDigitsAction.Parameters.MaxNumberOfDigits = 1;
-    playAudioAndGetDigitsAction.Parameters.AudioSource.Key = "prompt.wav";
-    return [playAudioAction, playAccountIdAction, playAudioAndGetDigitsAction];
+    playAudioAndGetDigitsAction.Parameters.AudioSource.Key = 'prompt.wav';
+    return [speakAction, playAudioAndGetDigitsAction];
   }
 }
 
 async function actionSuccessful(event) {
-  console.log("ACTION_SUCCESSFUL");
+  console.log('ACTION_SUCCESSFUL');
 
   switch (event.ActionData.Type) {
-    case "PlayAudioAndGetDigits":
+    case 'PlayAudioAndGetDigits':
       const callInfo = await getCaller(event.CallDetails.Participants[0].From);
 
       console.log({ callInfo });
-      console.log("ReceivedDigits: " + event.ActionData.ReceivedDigits);
+      console.log('ReceivedDigits: ' + event.ActionData.ReceivedDigits);
 
       if (callInfo.accountId) {
-        if (event.ActionData.ReceivedDigits === "1") {
-          console.log("Transfering to Sales");
-          playAudioAction.Parameters.AudioSource.Key = "transfer-to-sales.wav";
+        if (event.ActionData.ReceivedDigits === '1') {
+          console.log('Transferring to Sales');
+          playAudioAction.Parameters.AudioSource.Key = 'transfer-to-sales.wav';
           callAndBridgeAction.Parameters.CallerIdNumber =
             event.CallDetails.Participants[0].From;
           callAndBridgeAction.Parameters.Endpoints[0].Uri = salesNumber;
-          callInfo.extension = "sales";
+          callInfo.extension = 'sales';
           await updateCaller(callInfo);
           return [playAudioAction, callAndBridgeAction];
         } else {
-          console.log("Transfering to Support");
+          console.log('Transferring to Support');
           playAudioAction.Parameters.AudioSource.Key =
-            "transfer-to-support.wav";
+            'transfer-to-support.wav';
           callAndBridgeAction.Parameters.CallerIdNumber =
             event.CallDetails.Participants[0].From;
           callAndBridgeAction.Parameters.Endpoints[0].Uri = supportNumber;
-          callInfo.extension = "support";
+          callInfo.extension = 'support';
           await updateCaller(callInfo);
           return [playAudioAction, callAndBridgeAction];
         }
@@ -116,12 +113,12 @@ async function actionSuccessful(event) {
           id: event.CallDetails.TransactionId,
         };
 
-        console.log("putting in Dynamo: " + JSON.stringify(storeInfo));
+        console.log('putting in Dynamo: ' + JSON.stringify(storeInfo));
         putCaller(storeInfo);
         playAudioAndGetDigitsAction.Parameters.MaxNumberOfDigits = 1;
         playAudioAndGetDigitsAction.Parameters.MinNumberOfDigits = 1;
-        playAudioAndGetDigitsAction.Parameters.AudioSource.Key = "prompt.wav";
-        console.log("Stored accountId.  Sending Prompt");
+        playAudioAndGetDigitsAction.Parameters.AudioSource.Key = 'prompt.wav';
+        console.log('Stored accountId.  Sending Prompt');
         return [playAudioAndGetDigitsAction];
       }
 
@@ -131,77 +128,89 @@ async function actionSuccessful(event) {
 }
 
 const hangupAction = {
-  Type: "Hangup",
+  Type: 'Hangup',
   Parameters: {
-    SipResponseCode: "0",
-    ParticipantTag: "",
+    SipResponseCode: '0',
+    ParticipantTag: '',
   },
 };
 
 const playAudioAction = {
-  Type: "PlayAudio",
+  Type: 'PlayAudio',
   Parameters: {
-    ParticipantTag: "LEG-A",
+    ParticipantTag: 'LEG-A',
     AudioSource: {
-      Type: "S3",
+      Type: 'S3',
       BucketName: wavFileBucket,
-      Key: "",
+      Key: '',
     },
   },
 };
 
 const playAccountIdAction = {
-  Type: "PlayAudio",
+  Type: 'PlayAudio',
   Parameters: {
-    ParticipantTag: "LEG-A",
+    ParticipantTag: 'LEG-A',
     AudioSource: {
-      Type: "S3",
+      Type: 'S3',
       BucketName: wavFileBucket,
-      Key: "",
+      Key: '',
     },
   },
 };
 
 const playAudioAndGetDigitsAction = {
-  Type: "PlayAudioAndGetDigits",
+  Type: 'PlayAudioAndGetDigits',
   Parameters: {
-    MinNumberOfDigits: "",
-    MaxNumberOfDigits: "",
+    MinNumberOfDigits: '',
+    MaxNumberOfDigits: '',
     Repeat: 3,
     InBetweenDigitsDurationInMilliseconds: 1000,
     RepeatDurationInMilliseconds: 5000,
-    TerminatorDigits: ["#"],
+    TerminatorDigits: ['#'],
     AudioSource: {
-      Type: "S3",
+      Type: 'S3',
       BucketName: wavFileBucket,
-      Key: "",
+      Key: '',
     },
     FailureAudioSource: {
-      Type: "S3",
+      Type: 'S3',
       BucketName: wavFileBucket,
-      Key: "failure.wav",
+      Key: 'failure.wav',
     },
   },
 };
 
 const callAndBridgeAction = {
-  Type: "CallAndBridge",
+  Type: 'CallAndBridge',
   Parameters: {
-    CallTimeoutSeconds: "20", // integer, optional
-    CallerIdNumber: "", // required - this phone number must belong to the customer or be the From number of the A Leg
+    CallTimeoutSeconds: '20', // integer, optional
+    CallerIdNumber: '', // required - this phone number must belong to the customer or be the From number of the A Leg
     Endpoints: [
       {
-        Uri: "", // required
-        BridgeEndpointType: "PSTN", // required
+        Uri: '', // required
+        BridgeEndpointType: 'PSTN', // required
       },
     ],
   },
 };
 
-const pauseAction = {
-  Type: "Pause",
+const speakAction = {
+  Type: 'Speak',
   Parameters: {
-    DurationInMilliseconds: "1000",
+    Text: '',
+    CallId: '',
+    Engine: 'neural',
+    LanguageCode: 'en-US',
+    TextType: 'ssml',
+    VoiceId: 'Joanna',
+  },
+};
+
+const pauseAction = {
+  Type: 'Pause',
+  Parameters: {
+    DurationInMilliseconds: '1000',
   },
 };
 
@@ -231,9 +240,9 @@ async function updateCaller(callInfo) {
     Key: {
       phoneNumber: callInfo.phoneNumber,
     },
-    UpdateExpression: "set extension = :e",
+    UpdateExpression: 'set extension = :e',
     ExpressionAttributeValues: {
-      ":e": callInfo.extension,
+      ':e': callInfo.extension,
     },
   };
   console.log(params);
@@ -266,12 +275,12 @@ async function getCaller(callInfo) {
       console.log({ callInfo });
       return callInfo;
     } else {
-      console.log("Account ID not found");
+      console.log('Account ID not found');
       return false;
     }
   } catch (err) {
     console.log(err);
-    console.log("No phone found");
+    console.log('No phone found');
     return false;
   }
 }
