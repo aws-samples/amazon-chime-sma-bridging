@@ -1,4 +1,3 @@
-//  “Copyright Amazon.com Inc. or its affiliates.”
 const AWS = require('aws-sdk');
 const wavFileBucket = process.env['WAVFILE_BUCKET'];
 const callInfoTable = process.env['CALLINFO_TABLE_NAME'];
@@ -147,18 +146,6 @@ const playAudioAction = {
   },
 };
 
-const playAccountIdAction = {
-  Type: 'PlayAudio',
-  Parameters: {
-    ParticipantTag: 'LEG-A',
-    AudioSource: {
-      Type: 'S3',
-      BucketName: wavFileBucket,
-      Key: '',
-    },
-  },
-};
-
 const playAudioAndGetDigitsAction = {
   Type: 'PlayAudioAndGetDigits',
   Parameters: {
@@ -184,12 +171,12 @@ const playAudioAndGetDigitsAction = {
 const callAndBridgeAction = {
   Type: 'CallAndBridge',
   Parameters: {
-    CallTimeoutSeconds: '20', // integer, optional
-    CallerIdNumber: '', // required - this phone number must belong to the customer or be the From number of the A Leg
+    CallTimeoutSeconds: '20',
+    CallerIdNumber: '',
     Endpoints: [
       {
-        Uri: '', // required
-        BridgeEndpointType: 'PSTN', // required
+        Uri: '',
+        BridgeEndpointType: 'PSTN',
       },
     ],
   },
@@ -204,13 +191,6 @@ const speakAction = {
     LanguageCode: 'en-US',
     TextType: 'ssml',
     VoiceId: 'Joanna',
-  },
-};
-
-const pauseAction = {
-  Type: 'Pause',
-  Parameters: {
-    DurationInMilliseconds: '1000',
   },
 };
 
