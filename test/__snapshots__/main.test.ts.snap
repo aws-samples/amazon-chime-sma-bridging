@@ -329,7 +329,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/emulatorSipMediaApp/sipMediaAppRequest/PSTNResourceProvider)",
         "Environment": {
@@ -464,7 +464,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/inboundPhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
         "Environment": {
@@ -688,7 +688,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/inboundSipMediaApp/sipMediaAppRequest/PSTNResourceProvider)",
         "Environment": {
@@ -823,7 +823,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/inboundSipRule/sipRuleRequest/PSTNResourceProvider)",
         "Environment": {
@@ -970,7 +970,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/salesPhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
         "Environment": {
@@ -1099,7 +1099,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/salesSipRule/sipRuleRequest/PSTNResourceProvider)",
         "Environment": {
@@ -1386,7 +1386,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/supportPhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
         "Environment": {
@@ -1515,7 +1515,7 @@ exports[`Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6ff23d2800aac27308e31c227529dc13854507c3b2598d2433fcf82604fa054d.zip",
+          "S3Key": "2157f4ab8972014e220d70707296b292b3b7301f163f7cd641ccda0ee663530f.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/pstnAudio/supportSipRule/sipRuleRequest/PSTNResourceProvider)",
         "Environment": {
