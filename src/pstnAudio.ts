@@ -51,6 +51,9 @@ export class PSTNAudio extends Construct {
       },
     );
 
+    salesPhoneNumber.node.addDependency(inboundPhoneNumber);
+    supportPhoneNumber.node.addDependency(salesPhoneNumber);
+
     const smaHandlerRole = new iam.Role(this, 'smaHandlerRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       inlinePolicies: {
