@@ -962,6 +962,11 @@ exports[`Snapshot 1`] = `
     },
     "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventEFB0161C": {
       "DependsOn": [
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceBC5CD7BC",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceRole2E4562EA",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventC35D8B2F",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy3E9FAF1E",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDB2F8097",
         "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyC0A3B9F6",
         "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole04861E5D",
       ],
@@ -996,6 +1001,13 @@ exports[`Snapshot 1`] = `
       "Type": "AWS::Lambda::Function",
     },
     "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole04861E5D": {
+      "DependsOn": [
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceBC5CD7BC",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceRole2E4562EA",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventC35D8B2F",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy3E9FAF1E",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDB2F8097",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1027,6 +1039,13 @@ exports[`Snapshot 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyC0A3B9F6": {
+      "DependsOn": [
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceBC5CD7BC",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceRole2E4562EA",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventC35D8B2F",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy3E9FAF1E",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDB2F8097",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1070,6 +1089,13 @@ exports[`Snapshot 1`] = `
     },
     "pstnAudiosalesPhoneNumberChimePhoneNumberpstnCustomResourceC8805F3A": {
       "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceBC5CD7BC",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberpstnCustomResourceRole2E4562EA",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventC35D8B2F",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy3E9FAF1E",
+        "pstnAudioinboundPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDB2F8097",
+      ],
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
@@ -1378,6 +1404,10 @@ exports[`Snapshot 1`] = `
     },
     "pstnAudiosupportPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent7375247F": {
       "DependsOn": [
+        "pstnAudiosalesPhoneNumberChimePhoneNumberpstnCustomResourceC8805F3A",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventEFB0161C",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyC0A3B9F6",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole04861E5D",
         "pstnAudiosupportPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy892A9E13",
         "pstnAudiosupportPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleD287A959",
       ],
@@ -1412,6 +1442,12 @@ exports[`Snapshot 1`] = `
       "Type": "AWS::Lambda::Function",
     },
     "pstnAudiosupportPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleD287A959": {
+      "DependsOn": [
+        "pstnAudiosalesPhoneNumberChimePhoneNumberpstnCustomResourceC8805F3A",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventEFB0161C",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyC0A3B9F6",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole04861E5D",
+      ],
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -1443,6 +1479,12 @@ exports[`Snapshot 1`] = `
       "Type": "AWS::IAM::Role",
     },
     "pstnAudiosupportPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy892A9E13": {
+      "DependsOn": [
+        "pstnAudiosalesPhoneNumberChimePhoneNumberpstnCustomResourceC8805F3A",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventEFB0161C",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyC0A3B9F6",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole04861E5D",
+      ],
       "Properties": {
         "PolicyDocument": {
           "Statement": [
@@ -1486,6 +1528,12 @@ exports[`Snapshot 1`] = `
     },
     "pstnAudiosupportPhoneNumberChimePhoneNumberpstnCustomResourceC0024E13": {
       "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "pstnAudiosalesPhoneNumberChimePhoneNumberpstnCustomResourceC8805F3A",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventEFB0161C",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyC0A3B9F6",
+        "pstnAudiosalesPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole04861E5D",
+      ],
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
