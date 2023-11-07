@@ -1,11 +1,15 @@
 const { awscdk } = require('projen');
+const { JobPermission } = require('projen/lib/github/workflows-model');
+const { UpgradeDependenciesSchedule } = require('projen/lib/javascript');
+const AUTOMATION_TOKEN = 'PROJEN_GITHUB_TOKEN';
+
 const project = new awscdk.AwsCdkTypeScriptApp({
   cdkVersion: '2.41.0',
   defaultReleaseBranch: 'main',
   name: 'amazon-chime-sma-bridging',
-  deps: ['fs-extra', '@types/fs-extra'],
+  projenrcTs: true,
+  deps: ['fs-extra', '@types/fs-extra', 'cdk-amazon-chime-resources'],
   appEntrypoint: 'amazon-chime-sma-bridging.ts',
-  deps: ['cdk-amazon-chime-resources'],
   autoApproveOptions: {
     secret: 'GITHUB_TOKEN',
     allowedUsernames: ['schuettc'],
@@ -14,6 +18,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     ignoreProjen: false,
     workflowOptions: {
       labels: ['auto-approve', 'auto-merge'],
+      schedule: UpgradeDependenciesSchedule.WEEKLY,
     },
   },
   scripts: {
